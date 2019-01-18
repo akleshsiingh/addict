@@ -1,30 +1,31 @@
-package com.example.healthnode
+package com.example.healthnode.ui.dashboard
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.healthnode.R
+import com.example.healthnode.data.db.AppDatabase
+import com.example.healthnode.ui.base.BaseActivity
+import com.example.healthnode.utils.Logger
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import kotlinx.android.synthetic.main.activity_main.*
 import com.google.android.gms.fitness.data.BleDevice
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.request.BleScanCallback
-import com.google.android.gms.fitness.data.DataType.TYPE_STEP_COUNT_DELTA
-import java.util.Arrays.asList
-import com.google.android.gms.tasks.Task
 import java.util.*
+import javax.inject.Inject
 
 
 private const val TAG = "MAIN_ACTIVITY"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
+    @Inject lateinit var db:AppDatabase
+    override fun getContentView() = R.layout.activity_main
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
+    override fun onViewReady(savedInstanceState: Bundle?, intent: Intent?) {
         btnScan.click {
             startScanning()
         }
