@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewTreeObserver
 import com.example.healthnode.utils.Logger
 
@@ -28,12 +30,19 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var factory: MyViewModelFactory
 
+    // here i dont have to worry about making it SYNCRONISED under any scenerio
+    val vm: TargetViewModel by lazy {
+        ViewModelProviders.of(this, factory)[TargetViewModel::class.java]
+    }
 
     override fun getContentView() = R.layout.activity_main
 
     override fun onViewReady(savedInstanceState: Bundle?, intent: Intent?) {
-        val vm = ViewModelProviders.of(this, factory)[TargetViewModel::class.java]
-        val adapterGrid = AdapterAddictionGrid {}
+
+        val adapterGrid = AdapterAddictionGrid { target ->
+            vm.updateCurrentCount(target)
+        }
+
         listAddiction.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 Logger.e(TAG, " h - ${listAddiction.height}")
@@ -41,7 +50,7 @@ class MainActivity : BaseActivity() {
                     listAddiction.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 else listAddiction.viewTreeObserver.removeGlobalOnLayoutListener(this)
 
-                adapterGrid.height = listAddiction.height/3
+                adapterGrid.height = (listAddiction.height / 3f)
                 listAddiction.apply {
                     layoutManager = GridLayoutManager(this.context, 2)
                     adapter = adapterGrid
@@ -54,7 +63,7 @@ class MainActivity : BaseActivity() {
             it ?: return@Observer
             when {
                 it.status == Resource.STATUS.SUCCESS -> {
-                    adapterGrid.list = it.data!! // Here i ll make sure data not going to be null
+                    adapterGrid.list = it.data!! // Here i'll make sure data not going to be null
                 }
                 it.status == Resource.STATUS.ERROR -> longToast(it.error)
                 it.status == Resource.STATUS.LOADING -> {
@@ -81,6 +90,24 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menu?.apply {
+            add(0, 33, 2, "setting").setIcon(R.drawable.ic_setting).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            add(0, 44, 1, "refresh").setIcon(R.drawable.ic_refresh).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        item ?: return false
+        when (item.itemId) {
+            33 -> onBackPressed()
+            44 -> vm.resetCurrentCounter()
+        }
+        return true
+    }
 }
 
 

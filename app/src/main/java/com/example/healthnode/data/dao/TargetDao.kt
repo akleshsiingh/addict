@@ -15,5 +15,11 @@ abstract class TargetDao {
     abstract fun selectAll(): Flowable<List<Target>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertAll(it: MutableList<Target>):List<Long>
+    abstract fun insertAll(it: MutableList<Target>): List<Long>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun updateTarget(target: Target): Long
+
+    @Query("UPDATE Target set current = 0 ")
+    abstract fun clearCurrentCounter()
 }

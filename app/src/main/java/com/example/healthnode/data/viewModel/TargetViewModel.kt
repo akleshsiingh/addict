@@ -48,6 +48,26 @@ class TargetViewModel(private val dao: TargetDao) : BaseViewModel() {
         }, { it.printStackTrace() }))
     }
 
+    fun updateCurrentCount(target: Target) {
+        addToCompositeDisposable(
+            Single.fromCallable {
+                dao.updateTarget(target)
+            }.toIoThread().subscribe({
+                Logger.e("updated target", " $it")
+            },{it.printStackTrace()})
+        )
+    }
+
+    fun resetCurrentCounter() {
+        addToCompositeDisposable(
+            Single.fromCallable {
+                dao.clearCurrentCounter()
+            }.toIoThread().subscribe({
+                Logger.e("updated target", " $it")
+            },{it.printStackTrace()})
+        )
+    }
+
 
 }
 

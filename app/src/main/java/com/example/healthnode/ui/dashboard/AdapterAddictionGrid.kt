@@ -9,6 +9,7 @@ import com.example.healthnode.data.entity.Target
 import com.example.healthnode.ui.base.BaseViewHolder
 import com.example.healthnode.utils.click
 import com.example.healthnode.utils.inflateView
+import com.example.healthnode.utils.longToast
 import kotlinx.android.synthetic.main.addict_grid_row.view.*
 
 class AdapterAddictionGrid(private val callback: (Target) -> Unit) : RecyclerView.Adapter<BaseViewHolder>() {
@@ -18,7 +19,7 @@ class AdapterAddictionGrid(private val callback: (Target) -> Unit) : RecyclerVie
             field = value
             notifyDataSetChanged()
         }
-    var height: Int = 9
+    var height: Float = 0f
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int) = MyViewHolder(p0.inflateView(R.layout.addict_grid_row))
 
@@ -35,7 +36,17 @@ class AdapterAddictionGrid(private val callback: (Target) -> Unit) : RecyclerVie
             itemView.tvCurrent.text = "C: ${target.current}"
             itemView.tvTarget.text = "T: ${target.target}"
 
-            itemView.click { callback.invoke(target) }
+            itemView.click {
+                if (target.current < target.target) {
+                    target.current = target.current + 1
+                    itemView.tvCurrent.text =
+                            "C: ${target.current}" // by updating from here we dont have to notify our list
+                    callback.invoke(target)
+                } else
+                    itemView.context.longToast("You are exceeding your limit")
+            }
+            if (height != 0f)
+                itemView.layoutParams.height = height.toInt()
         }
     }
 }
