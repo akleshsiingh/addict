@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="com.example.healthnode">
+          xmlns:tools="http://schemas.android.com/tools" package="com.example.addict">
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <application
-            android:name=".MvvmApplication"
+            android:name="com.example.addict.MvvmApplication"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.target.TargetActivity"
+        <activity android:name="com.example.addict.ui.target.TargetActivity"
                   android:windowSoftInputMode="stateAlwaysHidden"
                   android:screenOrientation="portrait">
             <intent-filter>
@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.dashboard.MainActivity">
+        <activity android:name="com.example.addict.ui.dashboard.MainActivity">
 
         </activity>
     </application>
